@@ -1,0 +1,11 @@
+[package]
+name = "noobwerkz-example"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bytemuck = "1.24.0"
+futures = "0.3.31"
+glam = "0.30.8"
+instant = "0.1.13"
+noobwerkz = { git = "https://github.com/colingilbert/noobwerkz-ng.git", branch = "master" }

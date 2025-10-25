@@ -1,30 +1,36 @@
+use futures::executor::*;
+use instant::Duration;
 use noobwerkz::app::run;
+use noobwerkz::callbacks::*;
 use noobwerkz::camera::*;
 use noobwerkz::camera_context::CameraContext;
+use noobwerkz::generic_model::GenericModel;
 use noobwerkz::graphics_context::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
+use noobwerkz::light::*;
 use noobwerkz::model_node::*;
 use noobwerkz::resource::*;
 use noobwerkz::scene::*;
-use noobwerkz::callbacks::*;
-use noobwerkz::light::*;
-use instant::Duration;
-use futures::executor::*;
 use std::f32::consts::PI;
 
 fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<LightUniform>) {
     let mut u = noobwerkz::user_context::USER_CONTEXT.lock().unwrap();
 
-    u.models.push(block_on(
-        load_model_from_serialized(
-            "res".to_owned(),
-            "avocado.bin".to_owned(),
-            &mut gfx_ctx.device,
-            &mut gfx_ctx.queue,
-            &gfx_ctx.texture_bind_group_layout,
-        )).unwrap(),
-    );
+    let model_results = block_on(load_model_from_serialized(
+        "res".to_owned(),
+        "avocado.bin".to_owned(),
+        &mut gfx_ctx.device,
+        &mut gfx_ctx.queue,
+        &gfx_ctx.texture_bind_group_layout,
+    ))
+    .unwrap();
+
+    match model_results {
+        GenericModel::NormalMapped (m ) => {
+            u.models.push(m);
+        }
+    }
 
     let projection = Projection::new(
         gfx_ctx.config.height,
@@ -55,6 +61,7 @@ fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<Lig
     const NUM_INSTANCES_PER_ROW: u32 = 10;
     const SPACE_BETWEEN: f32 = 1.0;
     s.model_nodes.push(ModelNode::new(
+        ModelType::NormalMapped,
         u.models.len() - 1,
         (0..NUM_INSTANCES_PER_ROW)
             .flat_map(|z| {
@@ -86,38 +93,51 @@ fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<Lig
             .collect::<Vec<_>>(),
     ));
 
-    lights.push(LightUniform::new(glam::Vec3{x: 2.0, y: 2.0, z: 2.0}, glam::Vec3{x: 1.0, y: 1.0, z: 1.0}));
-    
+    lights.push(LightUniform::new(
+        glam::Vec3 {
+            x: 2.0,
+            y: 2.0,
+            z: 2.0,
+        },
+        glam::Vec3 {
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+        },
+    ));
+
     s.cameras.push(c);
-    
+
     u.scenes.push(s);
 }
 
-fn user_update_implementation(gfx_ctx : &mut GraphicsContext, cam_ctx: &mut CameraContext, light_ctx: &mut LightContext, dt: Duration) {
-        let mut u = noobwerkz::user_context::USER_CONTEXT.lock().unwrap();
-        let scene_idx = u.active_scene;
-        let s = &mut u.scenes[scene_idx];
-        let cam_idx = s.active_camera;
-        s.cameras[s.active_camera].update();
-        cam_ctx
-            .uniform
-            .update_view_proj(&s.cameras[cam_idx], &s.cameras[cam_idx].projection);
-        gfx_ctx.queue.write_buffer(
-            &cam_ctx.buffer,
-            0,
-            bytemuck::cast_slice(&[cam_ctx.uniform]),
-        );
+fn user_update_implementation(
+    gfx_ctx: &mut GraphicsContext,
+    cam_ctx: &mut CameraContext,
+    light_ctx: &mut LightContext,
+    dt: Duration,
+) {
+    let mut u = noobwerkz::user_context::USER_CONTEXT.lock().unwrap();
+    let scene_idx = u.active_scene;
+    let s = &mut u.scenes[scene_idx];
+    let cam_idx = s.active_camera;
+    s.cameras[s.active_camera].update();
+    cam_ctx
+        .uniform
+        .update_view_proj(&s.cameras[cam_idx], &s.cameras[cam_idx].projection);
+    gfx_ctx
+        .queue
+        .write_buffer(&cam_ctx.buffer, 0, bytemuck::cast_slice(&[cam_ctx.uniform]));
 
-        // Update the light
-        let old_position: glam::Vec3 = light_ctx.light_uniforms[0].position.into();
-        light_ctx.light_uniforms[0].position =
-            (glam::Quat::from_axis_angle(glam::Vec3::Y, PI * dt.as_secs_f32()) * old_position)
-                .into();
-        gfx_ctx.queue.write_buffer(
-            &light_ctx.light_buffer,
-            0,
-            bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
-        );
+    // Update the light
+    let old_position: glam::Vec3 = light_ctx.light_uniforms[0].position.into();
+    light_ctx.light_uniforms[0].position =
+        (glam::Quat::from_axis_angle(glam::Vec3::Y, PI * dt.as_secs_f32()) * old_position).into();
+    gfx_ctx.queue.write_buffer(
+        &light_ctx.light_buffer,
+        0,
+        bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
+    );
 }
 
 fn main() {

@@ -8,7 +8,6 @@ use noobwerkz::graphics_context::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
 use noobwerkz::light::*;
-use noobwerkz::model::*;
 use noobwerkz::model_node::*;
 use noobwerkz::resource::*;
 use noobwerkz::scene::*;

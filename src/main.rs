@@ -4,11 +4,11 @@ use noobwerkz::app::run;
 use noobwerkz::callbacks::*;
 use noobwerkz::camera::*;
 use noobwerkz::camera_context::CameraContext;
-use noobwerkz::generic_model::GenericModel;
 use noobwerkz::graphics_context::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
 use noobwerkz::light::*;
+use noobwerkz::model::*;
 use noobwerkz::model_node::*;
 use noobwerkz::resource::*;
 use noobwerkz::scene::*;
@@ -17,7 +17,7 @@ use std::f32::consts::PI;
 fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<LightUniform>) {
     let mut u = noobwerkz::user_context::USER_CONTEXT.lock().unwrap();
 
-    let model_results = block_on(load_model_from_serialized(
+    let m = block_on(load_model_from_serialized(
         "res".to_owned(),
         "avocado.bin".to_owned(),
         &mut gfx_ctx.device,
@@ -26,11 +26,7 @@ fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<Lig
     ))
     .unwrap();
 
-    match model_results {
-        GenericModel::NormalMapped (m ) => {
-            u.models.push(m);
-        }
-    }
+    u.models.push(m);
 
     let projection = Projection::new(
         gfx_ctx.config.height,

@@ -2099,7 +2099,7 @@ checksum = "610a5acd306ec67f907abe5567859a3c693fb9886eb1f012ab8f2a47bef3db51"
 [[package]]
 name = "noobwerkz"
 version = "0.0.1"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#e2383c2755740dc2329db3bebadaa186da634507"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#bb74706d7d0f1b9e46347d70415ac36be290570d"
 dependencies = [
  "anyhow",
  "bevy_ecs",

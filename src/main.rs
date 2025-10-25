@@ -19,6 +19,7 @@ fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<Lig
     let m = block_on(load_model_from_serialized(
         "res".to_owned(),
         "avocado.bin".to_owned(),
+        gfx_ctx.debug_material.normal_texture.clone(),
         &mut gfx_ctx.device,
         &mut gfx_ctx.queue,
         &gfx_ctx.texture_bind_group_layout,
@@ -26,6 +27,17 @@ fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<Lig
     .unwrap();
 
     u.models.push(m);
+
+    let m2 = block_on(load_model_from_serialized(
+        "res".to_owned(),
+        "cube.bin".to_owned(),
+        gfx_ctx.debug_material.normal_texture.clone(),
+        &mut gfx_ctx.device,
+        &mut gfx_ctx.queue,
+        &gfx_ctx.texture_bind_group_layout,
+    ))
+    .unwrap();
+    u.models.push(m2);
 
     let projection = Projection::new(
         gfx_ctx.config.height,
@@ -57,7 +69,7 @@ fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<Lig
     const SPACE_BETWEEN: f32 = 1.0;
     s.model_nodes.push(ModelNode::new(
         ModelType::NormalMapped,
-        u.models.len() - 1,
+        0,
         (0..NUM_INSTANCES_PER_ROW)
             .flat_map(|z| {
                 (0..NUM_INSTANCES_PER_ROW).map(move |x| {
@@ -76,6 +88,39 @@ fn user_setup_implementation(gfx_ctx: &mut GraphicsContext, lights: &mut Vec<Lig
                         x: 10.0,
                         y: 10.0,
                         z: 10.0,
+                    }
+                    .into();
+                    Instance {
+                        position,
+                        rotation,
+                        scale,
+                    }
+                })
+            })
+            .collect::<Vec<_>>(),
+    ));
+
+    s.model_nodes.push(ModelNode::new(
+        ModelType::NormalMapped,
+        1,
+        (0..1)
+            .flat_map(|z| {
+                (0..1).map(move |x| {
+                    let x = SPACE_BETWEEN * (x as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
+                    let z = SPACE_BETWEEN * (z as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
+
+                    let position: glam::Vec3A = glam::Vec3 { x, y: 0.0, z }.into();
+
+                    let rotation = if position == glam::Vec3A::ZERO {
+                        glam::Quat::from_axis_angle(glam::Vec3::Z, 0.0)
+                    } else {
+                        let pos: glam::Vec3 = position.into();
+                        glam::Quat::from_axis_angle(pos.normalize(), 45.0)
+                    };
+                    let scale: glam::Vec3A = glam::Vec3 {
+                        x: 1.0,
+                        y: 1.0,
+                        z: 1.0,
                     }
                     .into();
                     Instance {

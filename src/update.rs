@@ -2,15 +2,17 @@ use instant::Duration;
 use noobwerkz::camera_context::CameraContext;
 use noobwerkz::graphics_context::*;
 use noobwerkz::light::*;
+use noobwerkz::user_context::UserContext;
 use std::f32::consts::PI;
 
-pub fn user_update_implementation(
+pub fn user_update(
     gfx_ctx: &mut GraphicsContext,
     cam_ctx: &mut CameraContext,
     light_ctx: &mut LightContext,
+    user_ctx: &mut UserContext,
     dt: Duration,
 ) {
-    let mut u = noobwerkz::user_context::USER_CONTEXT.lock().unwrap();
+    let u = user_ctx;
     let scene_idx = u.active_scene;
     let s = &mut u.scenes[scene_idx];
     let cam_idx = s.active_camera;

@@ -1,4 +1,4 @@
-use instant::Duration;
+use web_time::Duration;
 use noobwerkz::camera_context::CameraContext;
 use noobwerkz::graphics_context::*;
 use noobwerkz::light::*;

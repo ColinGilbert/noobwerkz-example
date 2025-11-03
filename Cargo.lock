@@ -1945,7 +1945,7 @@ dependencies = [
 [[package]]
 name = "noobwerkz"
 version = "0.0.1"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#3da0c2abb0d95b5c4d9d88d90aca5d4a3220dff1"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#3ff9b8ec76974eda9ff895217c27d0520c240923"
 dependencies = [
  "anyhow",
  "bitmask-enum",

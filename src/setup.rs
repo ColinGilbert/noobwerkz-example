@@ -17,7 +17,8 @@ pub fn user_setup(
 ) {
     let u = user_ctx;
 
-    let data = load_model_from_json("res".to_owned(), "model.json".to_owned());
+    let data = load_serialized_model("res".to_owned(), "model.bin".to_owned());
+
     let m = load_skinned_model_from_serialized(
         data,
         gfx_ctx.debug_material.clone(),
@@ -26,7 +27,7 @@ pub fn user_setup(
         &mut gfx_ctx.queue,
         &gfx_ctx.texture_bind_group_layout,
     )
-    .expect("Model should");
+    .expect("Model should load");
     u.skinned_models.push(m);
 
     // let m2 = block_on(load_model_from_serialized(

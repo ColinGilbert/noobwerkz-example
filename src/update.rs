@@ -33,4 +33,6 @@ pub fn user_update(
         0,
         bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
     );
+
+    s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &gfx_ctx.bone_matrices_bind_group_layout, dt)
 }

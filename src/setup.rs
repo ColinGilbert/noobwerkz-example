@@ -1,4 +1,3 @@
-use futures::executor::*;
 use noobwerkz::camera::*;
 use noobwerkz::graphics_context::*;
 use noobwerkz::instance::*;
@@ -17,50 +16,6 @@ pub fn user_setup(
 ) {
     let u = user_ctx;
 
-    let data = load_serialized_model("res".to_owned(), "model.bin".to_owned());
-
-    let m = load_skinned_model_from_serialized(
-        data,
-        gfx_ctx.debug_material.clone(),
-        "res".to_owned(),
-        &mut gfx_ctx.device,
-        &mut gfx_ctx.queue,
-        &gfx_ctx.texture_bind_group_layout,
-    )
-    .expect("Model should load");
-    u.skinned_models.push(m);
-
-    // let m2 = block_on(load_model_from_serialized(
-    //     "res".to_owned(),
-    //     "cube.bin".to_owned(),
-    //     gfx_ctx.debug_material.clone(),
-    //     &mut gfx_ctx.device,
-    //     &mut gfx_ctx.queue,
-    //     &gfx_ctx.texture_bind_group_layout,
-    // ))
-    // .unwrap();
-
-    // u.models.push(m2);
-    // let m3 = load_model_from_serialized(
-    //     "res".to_owned(),
-    //     "cesium-man.bin".to_owned(),
-    //     gfx_ctx.debug_material.clone(),
-    //     &mut gfx_ctx.device,
-    //     &mut gfx_ctx.queue,
-    //     &gfx_ctx.texture_bind_group_layout,
-    // ))
-    // .unwrap();
-
-    // match m3 {
-    //     GenericModel::Textured(value) => {
-    //         u.models.push(value);
-    //     }
-    //     GenericModel::SkinnedTextured(value) => {
-    //         println!("Skinned model");
-    //         u.skinned_models.push(value);
-    //     }
-    // }
-
     let projection = Projection::new(
         gfx_ctx.config.height,
         gfx_ctx.config.width,
@@ -72,14 +27,14 @@ pub fn user_setup(
     let mut s = Scene::new();
     let c = Camera::new(
         &glam::Vec3 {
-            x: 10.0,
-            y: 10.0,
-            z: 10.0,
+            x: 1.5,
+            y: 1.0,
+            z: 3.0,
         },
         &glam::Vec3 {
             x: 0.0,
-            y: 0.0,
-            z: 0.0,
+            y: 1.0,
+            z: -0.0,
         },
         &glam::Vec3::Y,
         0.1,
@@ -87,71 +42,6 @@ pub fn user_setup(
         projection,
     );
 
-    const NUM_INSTANCES_PER_ROW: u32 = 10;
-    const SPACE_BETWEEN: f32 = 1.0;
-    // s.model_nodes.push(ModelNode::new(
-    //     0,
-    //     (0..NUM_INSTANCES_PER_ROW)
-    //         .flat_map(|z| {
-    //             (0..NUM_INSTANCES_PER_ROW).map(move |x| {
-    //                 let x = SPACE_BETWEEN * (x as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-    //                 let z = SPACE_BETWEEN * (z as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-
-    //                 let position: glam::Vec3A = glam::Vec3 { x, y: 0.0, z }.into();
-
-    //                 let rotation = if position == glam::Vec3A::ZERO {
-    //                     glam::Quat::from_axis_angle(glam::Vec3::Z, 0.0)
-    //                 } else {
-    //                     let pos: glam::Vec3 = position.into();
-    //                     glam::Quat::from_axis_angle(pos.normalize(), 45.0)
-    //                 };
-    //                 let scale: glam::Vec3A = glam::Vec3 {
-    //                     x: 10.0,
-    //                     y: 10.0,
-    //                     z: 10.0,
-    //                 }
-    //                 .into();
-    //                 Instance {
-    //                     position,
-    //                     rotation,
-    //                     scale,
-    //                 }
-    //             })
-    //         })
-    //         .collect::<Vec<_>>(),
-    // ));
-
-    // s.model_nodes.push(ModelNode::new(
-    //     1,
-    //     (0..1)
-    //         .flat_map(|z| {
-    //             (0..1).map(move |x| {
-    //                 let x = SPACE_BETWEEN * (x as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-    //                 let z = SPACE_BETWEEN * (z as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-
-    //                 let position: glam::Vec3A = glam::Vec3 { x, y: 0.0, z }.into();
-
-    //                 let rotation = if position == glam::Vec3A::ZERO {
-    //                     glam::Quat::from_axis_angle(glam::Vec3::Z, 0.0)
-    //                 } else {
-    //                     let pos: glam::Vec3 = position.into();
-    //                     glam::Quat::from_axis_angle(pos.normalize(), 45.0)
-    //                 };
-    //                 let scale: glam::Vec3A = glam::Vec3 {
-    //                     x: 1.0,
-    //                     y: 1.0,
-    //                     z: 1.0,
-    //                 }
-    //                 .into();
-    //                 Instance {
-    //                     position,
-    //                     rotation,
-    //                     scale,
-    //                 }
-    //             })
-    //         })
-    //         .collect::<Vec<_>>(),
-    // ));
     let mut anims = Vec::new();
     anims.push("animation_0.ozz".to_owned());
     u.skeletals.push(SkeletalContext::new(
@@ -160,25 +50,48 @@ pub fn user_setup(
         &anims,
     ));
 
-    s.skinned_model_nodes.push(SkinnedModelNode::new(
+    let mut data = load_serialized_model("res".to_owned(), "model.bin".to_owned());
+
+    let m = load_skinned_model_from_serialized(
+        &mut data,
+        gfx_ctx.debug_material.clone(),
+        "res".to_owned(),
         &mut gfx_ctx.device,
-        &gfx_ctx.bone_matrices_bind_group_layout,
+        &mut gfx_ctx.queue,
+        &gfx_ctx.texture_bind_group_layout,
+        &u.skeletals[0],
+    )
+    .expect("Model should load");
+
+    u.skinned_models.push(m);
+
+    let m2 = load_model_from_serialized(
+        &mut data,
+        gfx_ctx.debug_material.clone(),
+        "res".to_owned(),
+        &mut gfx_ctx.device,
+        &mut gfx_ctx.queue,
+        &gfx_ctx.texture_bind_group_layout,
+    )
+    .expect("Model should load");
+
+    const NUM_INSTANCES_PER_ROW: u32 = 1;
+    const SPACE_BETWEEN: f32 = 1.0;
+
+    u.models.push(m2);
+
+    s.model_nodes.push(ModelNode::new(
         0,
-        (0..1)
+        (0..NUM_INSTANCES_PER_ROW)
             .flat_map(|z| {
-                (0..1).map(move |x| {
+                (0..NUM_INSTANCES_PER_ROW).map(move |x| {
                     let x = SPACE_BETWEEN * (x as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
                     let z = SPACE_BETWEEN * (z as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
 
-                    let position: glam::Vec3A = glam::Vec3 { x, y: 3.0, z }.into();
-
-                    let rotation = glam::Quat::from_axis_angle(glam::Vec3::X, -90.0);
-                    let scale: glam::Vec3A = glam::Vec3 {
-                        x: 1.0,
-                        y: 1.0,
-                        z: 1.0,
-                    }
-                    .into();
+                    let position: glam::Vec3A = glam::Vec3 { x, y: 0.0, z }.into();
+                    let rotation = glam::Quat::IDENTITY;
+                    let scale: glam::Vec3A = glam::Vec3::splat(1.0).into();
+                    
                     Instance {
                         position,
                         rotation,
@@ -187,7 +100,34 @@ pub fn user_setup(
                 })
             })
             .collect::<Vec<_>>(),
+    ));
+
+    s.skinned_model_nodes.push(SkinnedModelNode::new(
+        &mut gfx_ctx.device,
+        &gfx_ctx.bone_matrices_bind_group_layout,
+        &u.skinned_models[0],
+        0,
+        (0..1)
+            .flat_map(|z| {
+                (0..1).map(move |x| {
+                    let x = SPACE_BETWEEN * (x as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
+                    let z = SPACE_BETWEEN * (z as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
+
+                    let position: glam::Vec3A = glam::Vec3 { x, y: 0.0, z}.into();
+                    let rotation = glam::Quat::IDENTITY;
+                    let scale: glam::Vec3A = glam::Vec3::splat(1.0).into();
+
+                    Instance {
+                        position,
+                        rotation,
+                        scale,
+                    }
+                })
+            })
+            .collect::<Vec<_>>(),
+    
         &u.skeletals[0],
+
     ));
 
     lights.push(LightUniform::new(

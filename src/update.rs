@@ -1,4 +1,5 @@
 use web_time::Duration;
+use noobwerkz::instance::*;
 use noobwerkz::camera_context::CameraContext;
 use noobwerkz::graphics_context::*;
 use noobwerkz::light::*;
@@ -34,5 +35,16 @@ pub fn user_update(
         bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
     );
 
-    s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &gfx_ctx.bone_matrices_bind_group_layout, dt)
+    s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &u.skinned_models[0], &gfx_ctx.bone_matrices_bind_group_layout, dt);
+
+    // let mut instances = Vec::<Instance>::new();
+    // for bm in &s.skinned_model_nodes[0].untransformed_bone_matrices {
+
+    //     let (scale, rot, trans) = glam::Mat4::to_scale_rotation_translation(&glam::Mat4::from_cols_array_2d(&bm.data));
+    //     let i = Instance { scale: scale.into(), rotation: rot, position: trans.into()};
+    //     instances.push(i);
+    // }
+    // s.model_nodes[0].instances.clear();
+    // s.model_nodes[0].instances = instances;
+
 }

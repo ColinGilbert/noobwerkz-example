@@ -3,6 +3,7 @@ use noobwerkz::graphics_context::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
 use noobwerkz::model_node::*;
+use noobwerkz::primitives::*;
 use noobwerkz::resource::*;
 use noobwerkz::scene::*;
 use noobwerkz::skeletal_context::SkeletalContext;
@@ -34,7 +35,7 @@ pub fn user_setup(
         &glam::Vec3 {
             x: 0.0,
             y: 1.0,
-            z: -0.0,
+            z: 0.0,
         },
         &glam::Vec3::Y,
         0.1,
@@ -44,13 +45,25 @@ pub fn user_setup(
 
     let mut anims = Vec::new();
     anims.push("animation_0.ozz".to_owned());
+
     u.skeletals.push(SkeletalContext::new(
         "res".to_owned(),
         "skeleton.ozz".to_owned(),
         &anims,
     ));
 
-    let mut data = load_serialized_model("res".to_owned(), "model.bin".to_owned());
+    let mut data = load_serialized_model("res".to_owned(), "cesium-man-model.bin".to_owned());
+
+
+  
+    // data.rotate(glam::Quat::from_axis_angle(
+    //     glam::Vec3 {
+    //         x: 0.0,
+    //         y: 0.0,
+    //         z: 1.0,
+    //     },
+    //     180.0,
+    // ));
 
     let m = load_skinned_model_from_serialized(
         &mut data,
@@ -65,76 +78,66 @@ pub fn user_setup(
 
     u.skinned_models.push(m);
 
-    let m2 = load_model_from_serialized(
-        &mut data,
-        gfx_ctx.debug_material.clone(),
-        "res".to_owned(),
-        &mut gfx_ctx.device,
-        &mut gfx_ctx.queue,
-        &gfx_ctx.texture_bind_group_layout,
-    )
-    .expect("Model should load");
+    // let mut cube = cube_serialized(0.1);
+    // let cube_model = load_model_from_serialized(
+    //     &mut cube,
+    //     gfx_ctx.debug_material.clone(),
+    //     "res".to_owned(),
+    //     &mut gfx_ctx.device,
+    //     &mut gfx_ctx.queue,
+    //     &gfx_ctx.texture_bind_group_layout,
+    // )
+    // .expect("Model should load");
 
-    const NUM_INSTANCES_PER_ROW: u32 = 1;
-    const SPACE_BETWEEN: f32 = 1.0;
-
-    u.models.push(m2);
-
-    s.model_nodes.push(ModelNode::new(
-        0,
-        (0..NUM_INSTANCES_PER_ROW)
-            .flat_map(|z| {
-                (0..NUM_INSTANCES_PER_ROW).map(move |x| {
-                    let x = SPACE_BETWEEN * (x as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-                    let z = SPACE_BETWEEN * (z as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-
-                    let position: glam::Vec3A = glam::Vec3 { x, y: 0.0, z }.into();
-                    let rotation = glam::Quat::IDENTITY;
-                    let scale: glam::Vec3A = glam::Vec3::splat(1.0).into();
-                    
-                    Instance {
-                        position,
-                        rotation,
-                        scale,
-                    }
-                })
-            })
-            .collect::<Vec<_>>(),
-    ));
+    // let nonskinned = load_model_from_serialized(
+    //     &mut data,
+    //     gfx_ctx.debug_material.clone(),
+    //     "res".to_owned(),
+    //     &mut gfx_ctx.device,
+    //     &mut gfx_ctx.queue,
+    //     &gfx_ctx.texture_bind_group_layout,
+    // )
+    // .expect("Model should load");
 
     s.skinned_model_nodes.push(SkinnedModelNode::new(
         &mut gfx_ctx.device,
         &gfx_ctx.bone_matrices_bind_group_layout,
-        &u.skinned_models[0],
         0,
-        (0..1)
-            .flat_map(|z| {
-                (0..1).map(move |x| {
-                    let x = SPACE_BETWEEN * (x as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-                    let z = SPACE_BETWEEN * (z as f32 - NUM_INSTANCES_PER_ROW as f32 / 10.0);
-
-                    let position: glam::Vec3A = glam::Vec3 { x, y: 0.0, z}.into();
-                    let rotation = glam::Quat::IDENTITY;
-                    let scale: glam::Vec3A = glam::Vec3::splat(1.0).into();
-
-                    Instance {
-                        position,
-                        rotation,
-                        scale,
-                    }
-                })
-            })
-            .collect::<Vec<_>>(),
-    
-        &u.skeletals[0],
-
+        vec![Instance {
+            position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+            rotation: glam::Quat::IDENTITY,
+            scale: glam::Vec3A::splat(1.0),
+        }],
+         &u.skeletals[0],
     ));
+
+    // u.models.push(cube_model);
+
+    // s.model_nodes.push(ModelNode::new(
+    //     0,
+    //     vec![Instance {
+    //         position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+    //         rotation: glam::Quat::IDENTITY,
+    //         scale: glam::Vec3A::splat(1.0),
+    //     }]
+    // ));
+
+    // u.models.push(nonskinned);
+
+    // s.model_nodes.push(ModelNode::new(
+    //     1,
+    //     vec![Instance {
+    //         position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+    //         rotation: glam::Quat::IDENTITY,
+    //         scale: glam::Vec3A::splat(1.0),
+    //     }]
+    // ));
 
     lights.push(LightUniform::new(
         glam::Vec3 {
-            x: 2.0,
+            x: 3.0,
             y: 2.0,
-            z: 2.0,
+            z: 3.0,
         },
         glam::Vec3 {
             x: 1.0,

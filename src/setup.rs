@@ -25,10 +25,15 @@ pub fn user_setup(
         1000.0,
     );
 
-    let mut s = Scene::new();
+    let mut s = Scene::new(&glam::Vec3 {
+        x: 0.0,
+        y: -9.81,
+        z: 0.0,
+    });
+
     let c = Camera::new(
         &glam::Vec3 {
-            x: 1.5,
+            x: 0.0,
             y: 1.0,
             z: 3.0,
         },
@@ -54,17 +59,6 @@ pub fn user_setup(
 
     let mut data = load_serialized_model("res".to_owned(), "cesium-man-model.bin".to_owned());
 
-
-  
-    // data.rotate(glam::Quat::from_axis_angle(
-    //     glam::Vec3 {
-    //         x: 0.0,
-    //         y: 0.0,
-    //         z: 1.0,
-    //     },
-    //     180.0,
-    // ));
-
     let m = load_skinned_model_from_serialized(
         &mut data,
         gfx_ctx.debug_material.clone(),
@@ -78,60 +72,122 @@ pub fn user_setup(
 
     u.skinned_models.push(m);
 
-    // let mut cube = cube_serialized(0.1);
-    // let cube_model = load_model_from_serialized(
-    //     &mut cube,
-    //     gfx_ctx.debug_material.clone(),
-    //     "res".to_owned(),
-    //     &mut gfx_ctx.device,
-    //     &mut gfx_ctx.queue,
-    //     &gfx_ctx.texture_bind_group_layout,
-    // )
-    // .expect("Model should load");
+    let mut avocado = load_serialized_model("res".to_owned(), "avocado-model.bin".to_owned());
+    let avocado_model = load_model_from_serialized(
+        &mut avocado,
+        gfx_ctx.debug_material.clone(),
+        "res".to_owned(),
+        &mut gfx_ctx.device,
+        &mut gfx_ctx.queue,
+        &gfx_ctx.texture_bind_group_layout,
+    )
+    .expect("Avocado should load");
 
-    // let nonskinned = load_model_from_serialized(
-    //     &mut data,
-    //     gfx_ctx.debug_material.clone(),
-    //     "res".to_owned(),
-    //     &mut gfx_ctx.device,
-    //     &mut gfx_ctx.queue,
-    //     &gfx_ctx.texture_bind_group_layout,
-    // )
-    // .expect("Model should load");
+    u.models.push(avocado_model);
+
+    s.model_nodes.push(ModelNode::new(
+        0,
+        vec![Instance {
+            position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+            rotation: glam::Quat::IDENTITY,
+            scale: glam::Vec3A::splat(10.0),
+        }],
+    ));
+
+    const SPACE_BETWEEN: f32 = 3.0;
+    let mut skeletal_anim_instances =  Vec::<Instance>::new();
+    let mut i = 0;
+    while i < 100 {
+        let mut j = 0;
+        while j < 10 {
+            skeletal_anim_instances.push(Instance {position: glam::Vec3A::from_array([SPACE_BETWEEN * i as f32, 0.0, SPACE_BETWEEN * j as f32]), rotation: glam::Quat::IDENTITY, scale: glam::Vec3A::splat(1.0)});
+            j +=1;
+        }
+        i += 1;
+    }
 
     s.skinned_model_nodes.push(SkinnedModelNode::new(
         &mut gfx_ctx.device,
         &gfx_ctx.bone_matrices_bind_group_layout,
         0,
-        vec![Instance {
-            position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-            rotation: glam::Quat::IDENTITY,
-            scale: glam::Vec3A::splat(1.0),
-        }],
-         &u.skeletals[0],
+        skeletal_anim_instances,
+        &u.skeletals[0],
+        ));
+
+    //     let mut cone_data = cone(1.0, 1.0);
+
+    //     let cone_model = load_model_from_serialized(
+    //         &mut cone_data,
+    //         gfx_ctx.debug_material.clone(),
+    //         "res".to_owned(),
+    //         &mut gfx_ctx.device,
+    //         &mut gfx_ctx.queue,
+    //         &gfx_ctx.texture_bind_group_layout,
+    //     )
+    //     .expect("Cone should load");
+
+    // //    let center_point = glam::Vec3::from_array(cone_data.meshes[0].dimensions) / -2.0;
+    //     u.models.push(cone_model);
+    //     s.model_nodes.push(ModelNode::new(
+    //         1,
+    //         vec![Instance {
+    //             position: glam::Vec3::ZERO.into(),
+    //             rotation: glam::Quat::IDENTITY,//from_axis_angle(glam::Vec3::X, -180.0),
+    //             scale: glam::Vec3A::splat(1.0),
+    //         }],
+    //     ));
+
+    //      let mut cuboid_data = cuboid(3.0, 1.0, 5.0);
+
+    //     let cuboid_model = load_model_from_serialized(
+    //         &mut cuboid_data,
+    //         gfx_ctx.debug_material.clone(),
+    //         "res".to_owned(),
+    //         &mut gfx_ctx.device,
+    //         &mut gfx_ctx.queue,
+    //         &gfx_ctx.texture_bind_group_layout,
+    //     )
+    //     .expect("Cone should load");
+
+    //     u.models.push(cuboid_model);
+    //     s.model_nodes.push(ModelNode::new(
+    //         2,
+    //         vec![Instance {
+    //             position: glam::Vec3::ZERO.into(),
+    //             rotation: glam::Quat::from_axis_angle(glam::Vec3::X, -90.0),
+    //             scale: glam::Vec3A::splat(1.0),
+    //         }],
+    //     ));
+
+    let mut capsule_data = capsule(0.7, 0.3);
+
+    let capsule_model = load_model_from_serialized(
+        &mut capsule_data,
+        gfx_ctx.debug_material.clone(),
+        "res".to_owned(),
+        &mut gfx_ctx.device,
+        &mut gfx_ctx.queue,
+        &gfx_ctx.texture_bind_group_layout,
+    )
+    .expect("Capsule should load");
+
+    let mut capsule_instances =  Vec::<Instance>::new();
+    let mut i = 0;
+    while i < 2 {
+        let mut j = 0;
+        while j < 2 {
+            capsule_instances.push(Instance {position: glam::Vec3A::from_array([SPACE_BETWEEN * i as f32, 0.0, SPACE_BETWEEN * j as f32]), rotation: glam::Quat::IDENTITY, scale: glam::Vec3A::splat(1.0)});
+            j +=1;
+        }
+        i += 1;
+    }
+
+
+    u.models.push(capsule_model);
+    s.model_nodes.push(ModelNode::new(
+        1,
+        capsule_instances
     ));
-
-    // u.models.push(cube_model);
-
-    // s.model_nodes.push(ModelNode::new(
-    //     0,
-    //     vec![Instance {
-    //         position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-    //         rotation: glam::Quat::IDENTITY,
-    //         scale: glam::Vec3A::splat(1.0),
-    //     }]
-    // ));
-
-    // u.models.push(nonskinned);
-
-    // s.model_nodes.push(ModelNode::new(
-    //     1,
-    //     vec![Instance {
-    //         position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-    //         rotation: glam::Quat::IDENTITY,
-    //         scale: glam::Vec3A::splat(1.0),
-    //     }]
-    // ));
 
     lights.push(LightUniform::new(
         glam::Vec3 {

@@ -35,12 +35,12 @@ pub fn user_update(
         bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
     );
 
-    let fps60 = Duration::from_micros((1_000_000.0 / 60.0) as u64);
+    let fps30 = Duration::from_micros((1_000_000.0 / 30.0) as u64);
     u.animation_time_elapsed += dt.as_micros();
     //println!("DT (uS): {}, time elapsed: {}, FPS60: {} ", dt.as_micros(), u.animation_time_elapsed, fps60.as_micros());
-    while u.animation_time_elapsed > fps60.as_micros() {
-        s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &u.skinned_models[0], &gfx_ctx.bone_matrices_bind_group_layout, fps60, 1.0);
-        u.animation_time_elapsed -= fps60.as_micros();
+    if u.animation_time_elapsed > fps30.as_micros() {
+        s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &u.skinned_models[0], fps30, 1.0);
+        u.animation_time_elapsed -= fps30.as_micros();
     }
     // let mut instances = Vec::<Instance>::new();
     // for bm in &s.skinned_model_nodes[0].untransformed_bone_matrices {

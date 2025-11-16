@@ -89,7 +89,7 @@ pub fn user_setup(
     u.models.push(avocado_model);
 
     s.model_nodes.push(ModelNode::new(
-        0,
+        u.models.len() - 1,
         vec![Instance {
             position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
             rotation: glam::Quat::IDENTITY,
@@ -112,7 +112,7 @@ pub fn user_setup(
     s.skinned_model_nodes.push(SkinnedModelNode::new(
         &mut gfx_ctx.device,
         &gfx_ctx.bone_matrices_bind_group_layout,
-        0,
+        u.skinned_models.len() - 1,
         skeletal_anim_instances,
         &u.skeletals[0],
         ));

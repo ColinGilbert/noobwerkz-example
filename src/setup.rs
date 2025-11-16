@@ -49,21 +49,23 @@ pub fn user_setup(
 
     let mut anims = Vec::new();
 
-    anims.push("animation_0.ozz".to_owned());
+    anims.push("animation_0.ozz");
 
     u.skeletals.push(SkeletalContext::new(
-        "res".to_owned(),
-        "cesium-man-skeleton.ozz".to_owned(),
+        &vec!["res"],
+        "cesium-man-skeleton.ozz",
         &anims,
     ));
 
-    let mut path = vec!["res".to_owned(), "cesium-man-model.bin".to_owned()];
-    let mut data = load_serialized_model(&path);
+    let path = vec!["res"];
+    let mut cesium_man_path = path.clone();
+    cesium_man_path.push("cesium-man-model.bin");
+    let mut data = load_serialized_model(&cesium_man_path);
 
     let m = load_skinned_model_from_serialized(
         &mut data,
         gfx_ctx.debug_material.clone(),
-        "res".to_owned(),
+        &path,
         &mut gfx_ctx.device,
         &mut gfx_ctx.queue,
         &gfx_ctx.texture_bind_group_layout,
@@ -72,14 +74,13 @@ pub fn user_setup(
     .expect("Cesium Man should load");
 
     u.skinned_models.push(m);
-    path.clear();
-    path.push("res".to_owned());
-    path.push("avocado-model.bin".to_owned());
-    let mut avocado = load_serialized_model(&path);
+    let mut avocado_path = path.clone();
+    avocado_path.push("avocado-model.bin");
+    let mut avocado = load_serialized_model(&avocado_path);
     let avocado_model = load_model_from_serialized(
         &mut avocado,
         gfx_ctx.debug_material.clone(),
-        "res".to_owned(),
+        &path,
         &mut gfx_ctx.device,
         &mut gfx_ctx.queue,
         &gfx_ctx.texture_bind_group_layout,
@@ -98,13 +99,21 @@ pub fn user_setup(
     ));
 
     const SPACE_BETWEEN: f32 = 1.6;
-    let mut skeletal_anim_instances =  Vec::<Instance>::new();
+    let mut skeletal_anim_instances = Vec::<Instance>::new();
     let mut i = 0;
     while i < 1 {
         let mut j = 0;
         while j < 1 {
-            skeletal_anim_instances.push(Instance {position: glam::Vec3A::from_array([SPACE_BETWEEN * i as f32, 0.0, SPACE_BETWEEN * j as f32]), rotation: glam::Quat::IDENTITY, scale: glam::Vec3A::splat(1.0)});
-            j +=1;
+            skeletal_anim_instances.push(Instance {
+                position: glam::Vec3A::from_array([
+                    SPACE_BETWEEN * i as f32,
+                    0.0,
+                    SPACE_BETWEEN * j as f32,
+                ]),
+                rotation: glam::Quat::IDENTITY,
+                scale: glam::Vec3A::splat(1.0),
+            });
+            j += 1;
         }
         i += 1;
     }
@@ -115,7 +124,7 @@ pub fn user_setup(
         u.skinned_models.len() - 1,
         skeletal_anim_instances,
         &u.skeletals[0],
-        ));
+    ));
 
     //     let mut cone_data = cone(1.0, 1.0);
 
@@ -184,7 +193,6 @@ pub fn user_setup(
     //     }
     //     i += 1;
     // }
-
 
     // u.models.push(capsule_model);
     // s.model_nodes.push(ModelNode::new(

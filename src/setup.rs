@@ -57,7 +57,8 @@ pub fn user_setup(
         &anims,
     ));
 
-    let mut data = load_serialized_model("res".to_owned(), "cesium-man-model.bin".to_owned());
+    let mut path = vec!["res".to_owned(), "cesium-man-model.bin".to_owned()];
+    let mut data = load_serialized_model(&path);
 
     let m = load_skinned_model_from_serialized(
         &mut data,
@@ -71,8 +72,10 @@ pub fn user_setup(
     .expect("Cesium Man should load");
 
     u.skinned_models.push(m);
-
-    let mut avocado = load_serialized_model("res".to_owned(), "avocado-model.bin".to_owned());
+    path.clear();
+    path.push("res".to_owned());
+    path.push("avocado-model.bin".to_owned());
+    let mut avocado = load_serialized_model(&path);
     let avocado_model = load_model_from_serialized(
         &mut avocado,
         gfx_ctx.debug_material.clone(),

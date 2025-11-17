@@ -3,7 +3,6 @@ use noobwerkz::graphics_context::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
 use noobwerkz::model_node::*;
-use noobwerkz::resource::*;
 use noobwerkz::scene::*;
 use noobwerkz::skeletal_context::SkeletalContext;
 use noobwerkz::skinned_model_node::*;
@@ -57,46 +56,21 @@ pub fn user_setup(
         &anims,
     ));
 
-    let path = vec!["res"];
+
+    let mut path = std::path::PathBuf::new();
+    path.push("res");
     let mut cesium_man_path = path.clone();
     cesium_man_path.push("cesium-man-model.bin");
-    let mut data = load_serialized_model(&cesium_man_path);
 
-    let m = load_skinned_model_from_serialized(
-        &mut data,
-        gfx_ctx.debug_material.clone(),
-        &path,
+    let cesium_man = u.asset_mgr.load_skinned_model_from_file(
+        &cesium_man_path,
+        "Cesium Man",
         &mut gfx_ctx.device,
         &mut gfx_ctx.queue,
-        &gfx_ctx.texture_bind_group_layout,
+        &gfx_ctx.debug_material,
+        &gfx_ctx.texture_bind_group_layout_3d,
         &u.skeletals[0],
-    )
-    .expect("Cesium Man should load");
-
-    u.skinned_models.push(m);
-    let mut avocado_path = path.clone();
-    avocado_path.push("avocado-model.bin");
-    let mut avocado = load_serialized_model(&avocado_path);
-    let avocado_model = load_model_from_serialized(
-        &mut avocado,
-        gfx_ctx.debug_material.clone(),
-        &path,
-        &mut gfx_ctx.device,
-        &mut gfx_ctx.queue,
-        &gfx_ctx.texture_bind_group_layout,
-    )
-    .expect("Avocado should load");
-
-    u.models.push(avocado_model);
-
-    s.model_nodes.push(ModelNode::new(
-        u.models.len() - 1,
-        vec![Instance {
-            position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-            rotation: glam::Quat::IDENTITY,
-            scale: glam::Vec3A::splat(10.0),
-        }],
-    ));
+    );
 
     const SPACE_BETWEEN: f32 = 1.6;
     let mut skeletal_anim_instances = Vec::<Instance>::new();
@@ -117,14 +91,48 @@ pub fn user_setup(
         }
         i += 1;
     }
+    match cesium_man {
+        Ok(val) => {
+            s.skinned_model_nodes.push(SkinnedModelNode::new(
+                &mut gfx_ctx.device,
+                &gfx_ctx.bone_matrices_bind_group_layout,
+                val,
+                skeletal_anim_instances,
+                &u.skeletals[0],
+            ));
+        }
+        Err(err) => {
+            println!("Could not load skinned model. Error: {}", err);
+        }
+    }
 
-    s.skinned_model_nodes.push(SkinnedModelNode::new(
+    let mut avocado_path = path.clone();
+    avocado_path.push("avocado-model.bin");
+
+    let avocado = u.asset_mgr.load_model_from_file(
+        &avocado_path,
+        "Avocado",
         &mut gfx_ctx.device,
-        &gfx_ctx.bone_matrices_bind_group_layout,
-        u.skinned_models.len() - 1,
-        skeletal_anim_instances,
-        &u.skeletals[0],
-    ));
+        &mut gfx_ctx.queue,
+        &gfx_ctx.debug_material,
+        &gfx_ctx.texture_bind_group_layout_3d,
+    );
+
+    match avocado {
+        Ok(val) => {
+            s.model_nodes.push(ModelNode::new(
+                val,
+                vec![Instance {
+                    position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+                    rotation: glam::Quat::IDENTITY,
+                    scale: glam::Vec3A::splat(10.0),
+                }],
+            ));
+        }
+        Err(err) => {
+            println!("Could not load model from file. Error {}", err)
+        }
+    }
 
     //     let mut cone_data = cone(1.0, 1.0);
 

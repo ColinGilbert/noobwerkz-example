@@ -9,3 +9,5 @@ futures = "0.3.31"
 glam = "0.30.8"
 noobwerkz = { git = "https://github.com/colingilbert/noobwerkz-ng.git", branch = "master" }
 web-time = "1.1.0"
+yakui = { git= "https://github.com/SecondHalfGames/yakui", branch="main" }
+

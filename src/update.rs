@@ -36,20 +36,10 @@ pub fn user_update(
     );
 
     let fps30 = Duration::from_micros((1_000_000.0 / 30.0) as u64);
-    u.animation_time_elapsed += dt.as_micros();
-    //println!("DT (uS): {}, time elapsed: {}, FPS60: {} ", dt.as_micros(), u.animation_time_elapsed, fps60.as_micros());
-    if u.animation_time_elapsed > fps30.as_micros() {
-        s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &u.skinned_models[0], fps30, 1.0);
-        u.animation_time_elapsed -= fps30.as_micros();
+    u.time_elapsed += dt.as_micros();
+    if u.time_elapsed > fps30.as_micros() {
+        s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &u.asset_mgr.skinned_models[0], fps30, 1.0);
+        u.time_elapsed -= fps30.as_micros();
     }
-    // let mut instances = Vec::<Instance>::new();
-    // for bm in &s.skinned_model_nodes[0].untransformed_bone_matrices {
-
-    //     let (scale, rot, trans) = glam::Mat4::to_scale_rotation_translation(&glam::Mat4::from_cols_array_2d(&bm.data));
-    //     let i = Instance { scale: scale.into(), rotation: rot, position: trans.into()};
-    //     instances.push(i);
-    // }
-    // s.model_nodes[0].instances.clear();
-    // s.model_nodes[0].instances = instances;
 
 }

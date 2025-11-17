@@ -5,9 +5,8 @@ edition = "2024"
 
 [dependencies]
 bytemuck = "1.24.0"
+egui = "0.33.2"
 futures = "0.3.31"
 glam = "0.30.8"
 noobwerkz = { git = "https://github.com/colingilbert/noobwerkz-ng.git", branch = "master" }
 web-time = "1.1.0"
-yakui = { git= "https://github.com/SecondHalfGames/yakui", branch="main" }
-

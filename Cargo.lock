@@ -2560,7 +2560,7 @@ dependencies = [
 [[package]]
 name = "noobwerkz"
 version = "0.0.1"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#1791c750191458e09b5735d9be99febe9584c46f"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#f235915bebef4a55787d9fa6876a35584d395121"
 dependencies = [
  "anyhow",
  "bincode",

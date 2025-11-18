@@ -1079,6 +1079,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dodgy_3d"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "39f227e0458ca9801ba6245697e3d1c50b0f0e8b63cb6923916dcc55aebe2c1b"
+dependencies = [
+ "glam 0.29.3",
+ "rand 0.8.5",
+]
+
+[[package]]
 name = "downcast-rs"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1778,12 +1788,6 @@ checksum = "fdf242682df893b86f33a73828fb09ca4b2d3bb6cc95249707fc684d27484b91"
 dependencies = [
  "bitflags 2.10.0",
 ]
-
-[[package]]
-name = "grid"
-version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "12101ecc8225ea6d675bc70263074eab6169079621c2186fe0c66590b2df9681"
 
 [[package]]
 name = "half"
@@ -2560,7 +2564,7 @@ dependencies = [
 [[package]]
 name = "noobwerkz"
 version = "0.0.1"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#f235915bebef4a55787d9fa6876a35584d395121"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#13bf4cd8ea3c87fdaa99f666399fa0f0c6b81e54"
 dependencies = [
  "anyhow",
  "bincode",
@@ -2568,6 +2572,7 @@ dependencies = [
  "bytemuck",
  "cpal",
  "dodgy_2d",
+ "dodgy_3d",
  "egui",
  "egui-wgpu",
  "egui-winit",
@@ -2590,7 +2595,6 @@ dependencies = [
  "serde",
  "slotmap",
  "symphonia",
- "taffy",
  "truck-meshalgo",
  "truck-modeling",
  "truck-stepio",
@@ -2603,12 +2607,7 @@ dependencies = [
 name = "noobwerkz_example"
 version = "0.1.0"
 dependencies = [
- "bytemuck",
- "egui",
- "futures",
- "glam 0.30.9",
  "noobwerkz",
- "web-time",
 ]
 
 [[package]]
@@ -4257,18 +4256,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.110",
-]
-
-[[package]]
-name = "taffy"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b25026fb8cc9ab51ab9fdabe5d11706796966f6d1c78e19871ef63be2b8f0644"
-dependencies = [
- "arrayvec",
- "grid",
- "serde",
- "slotmap",
 ]
 
 [[package]]

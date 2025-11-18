@@ -2,7 +2,7 @@ use noobwerkz::{egui_tools::EguiRenderer, user_context::UserContext};
 
 
 pub fn user_gui(egui_renderer: &mut EguiRenderer, user_ctx: &mut UserContext) {
-        egui::Window::new("Noobwerkz engine!")
+        noobwerkz::egui::Window::new("Noobwerkz engine!")
             .resizable(true)
             .vscroll(true)
             .default_open(false)

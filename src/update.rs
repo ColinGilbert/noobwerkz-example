@@ -1,5 +1,4 @@
-use web_time::Duration;
-// use noobwerkz::instance::*;
+use noobwerkz::web_time::Duration;
 use noobwerkz::camera_context::CameraContext;
 use noobwerkz::graphics_context::*;
 use noobwerkz::light::*;
@@ -23,16 +22,16 @@ pub fn user_update(
         .update_view_proj(&s.cameras[cam_idx], &s.cameras[cam_idx].projection);
     gfx_ctx
         .queue
-        .write_buffer(&cam_ctx.buffer, 0, bytemuck::cast_slice(&[cam_ctx.uniform]));
+        .write_buffer(&cam_ctx.buffer, 0, noobwerkz::bytemuck::cast_slice(&[cam_ctx.uniform]));
 
     // Update the light
-    let old_position: glam::Vec3 = light_ctx.light_uniforms[0].position.into();
+    let old_position: noobwerkz::glam::Vec3 = light_ctx.light_uniforms[0].position.into();
     light_ctx.light_uniforms[0].position =
-        (glam::Quat::from_axis_angle(glam::Vec3::Y, PI * dt.as_secs_f32()) * old_position).into();
+        (noobwerkz::glam::Quat::from_axis_angle(noobwerkz::glam::Vec3::Y, PI * dt.as_secs_f32()) * old_position).into();
     gfx_ctx.queue.write_buffer(
         &light_ctx.light_buffer,
         0,
-        bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
+        noobwerkz::bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
     );
 
     let fps30 = Duration::from_micros((1_000_000.0 / 30.0) as u64);

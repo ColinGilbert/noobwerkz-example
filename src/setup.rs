@@ -23,24 +23,24 @@ pub fn user_setup(
         1000.0,
     );
 
-    let mut s = Scene::new(&glam::Vec3 {
+    let mut s = Scene::new(&noobwerkz::glam::Vec3 {
         x: 0.0,
         y: -9.81,
         z: 0.0,
     });
 
     let c = Camera::new(
-        &glam::Vec3 {
+        &noobwerkz::glam::Vec3 {
             x: 0.0,
             y: 1.0,
             z: 3.0,
         },
-        &glam::Vec3 {
+        &noobwerkz::glam::Vec3 {
             x: 0.0,
             y: 1.0,
             z: 0.0,
         },
-        &glam::Vec3::Y,
+        &noobwerkz::glam::Vec3::Y,
         0.1,
         0.1,
         projection,
@@ -79,13 +79,13 @@ pub fn user_setup(
         let mut j = 0;
         while j < 1 {
             skeletal_anim_instances.push(Instance {
-                position: glam::Vec3A::from_array([
+                position: noobwerkz::glam::Vec3A::from_array([
                     SPACE_BETWEEN * i as f32,
                     0.0,
                     SPACE_BETWEEN * j as f32,
                 ]),
-                rotation: glam::Quat::IDENTITY,
-                scale: glam::Vec3A::splat(1.0),
+                rotation: noobwerkz::glam::Quat::IDENTITY,
+                scale: noobwerkz::glam::Vec3A::splat(1.0),
             });
             j += 1;
         }
@@ -123,9 +123,9 @@ pub fn user_setup(
             s.model_nodes.push(ModelNode::new(
                 val,
                 vec![Instance {
-                    position: glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-                    rotation: glam::Quat::IDENTITY,
-                    scale: glam::Vec3A::splat(10.0),
+                    position: noobwerkz::glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+                    rotation: noobwerkz::glam::Quat::IDENTITY,
+                    scale: noobwerkz::glam::Vec3A::splat(10.0),
                 }],
             ));
         }
@@ -146,14 +146,14 @@ pub fn user_setup(
     //     )
     //     .expect("Cone should load");
 
-    // //    let center_point = glam::Vec3::from_array(cone_data.meshes[0].dimensions) / -2.0;
+    // //    let center_point = noobwerkz::glam::Vec3::from_array(cone_data.meshes[0].dimensions) / -2.0;
     //     u.models.push(cone_model);
     //     s.model_nodes.push(ModelNode::new(
     //         1,
     //         vec![Instance {
-    //             position: glam::Vec3::ZERO.into(),
-    //             rotation: glam::Quat::IDENTITY,//from_axis_angle(glam::Vec3::X, -180.0),
-    //             scale: glam::Vec3A::splat(1.0),
+    //             position: noobwerkz::glam::Vec3::ZERO.into(),
+    //             rotation: noobwerkz::glam::Quat::IDENTITY,//from_axis_angle(noobwerkz::glam::Vec3::X, -180.0),
+    //             scale: noobwerkz::glam::Vec3A::splat(1.0),
     //         }],
     //     ));
 
@@ -173,9 +173,9 @@ pub fn user_setup(
     //     s.model_nodes.push(ModelNode::new(
     //         2,
     //         vec![Instance {
-    //             position: glam::Vec3::ZERO.into(),
-    //             rotation: glam::Quat::from_axis_angle(glam::Vec3::X, -90.0),
-    //             scale: glam::Vec3A::splat(1.0),
+    //             position: noobwerkz::glam::Vec3::ZERO.into(),
+    //             rotation: noobwerkz::glam::Quat::from_axis_angle(noobwerkz::glam::Vec3::X, -90.0),
+    //             scale: noobwerkz::glam::Vec3A::splat(1.0),
     //         }],
     //     ));
 
@@ -196,7 +196,7 @@ pub fn user_setup(
     // while i < 2 {
     //     let mut j = 0;
     //     while j < 2 {
-    //         capsule_instances.push(Instance {position: glam::Vec3A::from_array([SPACE_BETWEEN * i as f32, 0.0, SPACE_BETWEEN * j as f32]), rotation: glam::Quat::IDENTITY, scale: glam::Vec3A::splat(1.0)});
+    //         capsule_instances.push(Instance {position: noobwerkz::glam::Vec3A::from_array([SPACE_BETWEEN * i as f32, 0.0, SPACE_BETWEEN * j as f32]), rotation: noobwerkz::glam::Quat::IDENTITY, scale: noobwerkz::glam::Vec3A::splat(1.0)});
     //         j +=1;
     //     }
     //     i += 1;
@@ -209,12 +209,12 @@ pub fn user_setup(
     // ));
 
     lights.push(LightUniform::new(
-        glam::Vec3 {
+        noobwerkz::glam::Vec3 {
             x: 3.0,
             y: 2.0,
             z: 3.0,
         },
-        glam::Vec3 {
+        noobwerkz::glam::Vec3 {
             x: 1.0,
             y: 1.0,
             z: 1.0,

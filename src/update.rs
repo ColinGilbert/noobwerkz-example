@@ -37,7 +37,7 @@ pub fn user_update(
     let fps30 = Duration::from_micros((1_000_000.0 / 30.0) as u64);
     u.time_elapsed += dt.as_micros();
     if u.time_elapsed > fps30.as_micros() {
-        s.skinned_model_nodes[0].update(&mut gfx_ctx.device, &mut gfx_ctx.queue, &u.asset_mgr.skinned_models[0], fps30, 1.0);
+        s.skinned_model_nodes[0].update(&mut gfx_ctx.queue, &u.asset_mgr.skinned_models[0], fps30, 1.0);
         u.time_elapsed -= fps30.as_micros();
     }
 

@@ -1,5 +1,5 @@
 use noobwerkz::camera::*;
-use noobwerkz::graphics_context::*;
+use noobwerkz::graphics::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
 use noobwerkz::model_node::*;

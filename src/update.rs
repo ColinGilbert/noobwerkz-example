@@ -1,6 +1,6 @@
 use noobwerkz::web_time::Duration;
-use noobwerkz::camera_context::CameraContext;
-use noobwerkz::graphics_context::*;
+use noobwerkz::camera::CameraContext;
+use noobwerkz::graphics::*;
 use noobwerkz::light::*;
 use noobwerkz::user_context::UserContext;
 use std::f32::consts::PI;

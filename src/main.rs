@@ -3,7 +3,6 @@ use noobwerkz::callbacks::*;
 use noobwerkz_example::setup::*;
 use noobwerkz_example::update::*;
 use noobwerkz_example::gui::*;
-use noobwerkz_example::user_struct::*;
 fn main() {
 
     init_user_setup_callback(user_setup);

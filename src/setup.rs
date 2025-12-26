@@ -1,3 +1,8 @@
+use anim_graph_rs::animgraph_definitions::AnimGraphDefinition;
+use anim_graph_rs::edge_definitions::AnimEdgeDefinition;
+use anim_graph_rs::node_definitions::AnimNodeDefinition;
+use anim_graph_rs::node_definitions::SamplerNodeDefinition;
+use anim_graph_rs::node_definitions::StateMachineNodeDefinition;
 use noobwerkz::camera::*;
 use noobwerkz::graphics::*;
 use noobwerkz::instance::*;
@@ -5,7 +10,6 @@ use noobwerkz::light::LightUniform;
 use noobwerkz::model_node::*;
 use noobwerkz::scene::*;
 use noobwerkz::skeletal_context::SkeletalContext;
-use noobwerkz::skinned_model_node::*;
 use noobwerkz::user_context::UserContext;
 
 pub fn user_setup(
@@ -56,7 +60,6 @@ pub fn user_setup(
         &anims,
     ));
 
-
     let mut path = std::path::PathBuf::new();
     path.push("res");
     let mut cesium_man_path = path.clone();
@@ -72,34 +75,60 @@ pub fn user_setup(
         &u.skeletals[0],
     );
 
-    const SPACE_BETWEEN: f32 = 1.6;
+    //const SPACE_BETWEEN: f32 = 1.6;
     let mut skeletal_anim_instances = Vec::<Instance>::new();
-    let mut i = 0;
-    while i < 1 {
-        let mut j = 0;
-        while j < 1 {
-            skeletal_anim_instances.push(Instance {
-                position: noobwerkz::glam::Vec3A::from_array([
-                    SPACE_BETWEEN * i as f32,
-                    0.0,
-                    SPACE_BETWEEN * j as f32,
-                ]),
-                rotation: noobwerkz::glam::Quat::IDENTITY,
-                scale: noobwerkz::glam::Vec3A::splat(1.0),
-            });
-            j += 1;
-        }
-        i += 1;
-    }
+    //let mut outer = 0;
+    // while outer < 2 {
+    //     let mut inner = 0;
+    //     while inner < 2 {
+    skeletal_anim_instances.push(Instance {
+        position: noobwerkz::glam::Vec3A::from_array([
+            0.0, //SPACE_BETWEEN * outer as f32,
+            0.0,
+            0.0,//SPACE_BETWEEN * inner as f32,
+        ]),
+        rotation: noobwerkz::glam::Quat::IDENTITY,
+        scale: noobwerkz::glam::Vec3A::splat(1.0),
+    });
+    //     inner += 1;
+    // }
+    // outer += 1;
+    // }
+
+    let mut animgraph_definition = AnimGraphDefinition::new();
+    let mut state_machine_definition = StateMachineNodeDefinition::new();
+    let node = state_machine_definition
+        .graph
+        .add_node(AnimNodeDefinition::Sampler(SamplerNodeDefinition::new(
+            "animation_0".to_owned(),
+        )));
+    let _ = state_machine_definition.graph.add_edge(
+        AnimEdgeDefinition::Simple,
+        state_machine_definition.start,
+        node,
+    );
+    let _ = state_machine_definition.graph.add_edge(
+        AnimEdgeDefinition::Simple,
+        node,
+        state_machine_definition.end,
+    );
+    let root = animgraph_definition
+        .graph
+        .add_node(state_machine_definition);
+    animgraph_definition.root = Some(root);
+
     match cesium_man {
         Ok(val) => {
-            s.skinned_model_nodes.push(SkinnedModelNode::new(
+            s.add_characters(
                 &mut gfx_ctx.device,
                 &gfx_ctx.bone_matrices_bind_group_layout,
                 val,
-                skeletal_anim_instances,
-                &u.skeletals[0],
-            ));
+                &skeletal_anim_instances,
+                &animgraph_definition,
+                u.skeletals[0].skeleton.clone(),
+                &u.skeletals[0].get_anim_name_map(),
+                "cesium-man".to_owned(),
+            );
         }
         Err(err) => {
             println!("Could not load skinned model. Error: {}", err);

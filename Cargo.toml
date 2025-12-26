@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 noobwerkz = { git = "https://github.com/colingilbert/noobwerkz-ng.git", branch = "master" }
+anim-graph-rs = { git="https://www.github.com/ColinGilbert/anim-graph-rs.git", branch="main" }
+

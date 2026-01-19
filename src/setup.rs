@@ -1,8 +1,3 @@
-use anim_graph_rs::animgraph_definitions::AnimGraphDefinition;
-use anim_graph_rs::edge_definitions::AnimEdgeDefinition;
-use anim_graph_rs::node_definitions::AnimNodeDefinition;
-use anim_graph_rs::node_definitions::SamplerNodeDefinition;
-use anim_graph_rs::node_definitions::StateMachineNodeDefinition;
 use noobwerkz::camera::*;
 use noobwerkz::graphics::*;
 use noobwerkz::instance::*;
@@ -11,6 +6,11 @@ use noobwerkz::model_node::*;
 use noobwerkz::scene::*;
 use noobwerkz::skeletal_context::SkeletalContext;
 use noobwerkz::user_context::UserContext;
+use anim_graph_rs::animgraph_definitions::AnimGraphDefinition;
+use anim_graph_rs::edge_definitions::AnimEdgeDefinition;
+use anim_graph_rs::node_definitions::AnimNodeDefinition;
+use anim_graph_rs::node_definitions::SamplerNodeDefinition;
+use anim_graph_rs::node_definitions::StateMachineNodeDefinition;
 
 pub fn user_setup(
     gfx_ctx: &mut GraphicsContext,
@@ -87,7 +87,7 @@ pub fn user_setup(
             0.0,
             0.0,//SPACE_BETWEEN * inner as f32,
         ]),
-        rotation: noobwerkz::glam::Quat::IDENTITY,
+        orientation: noobwerkz::glam::Quat::IDENTITY,
         scale: noobwerkz::glam::Vec3A::splat(1.0),
     });
     //     inner += 1;
@@ -96,7 +96,7 @@ pub fn user_setup(
     // }
 
     let mut animgraph_definition = AnimGraphDefinition::new();
-    let mut state_machine_definition = StateMachineNodeDefinition::new();
+    let mut state_machine_definition = StateMachineNodeDefinition::new("root".to_owned());
     let node = state_machine_definition
         .graph
         .add_node(AnimNodeDefinition::Sampler(SamplerNodeDefinition::new(
@@ -115,6 +115,7 @@ pub fn user_setup(
     let root = animgraph_definition
         .graph
         .add_node(state_machine_definition);
+    
     animgraph_definition.root = Some(root);
 
     match cesium_man {
@@ -153,7 +154,7 @@ pub fn user_setup(
                 val,
                 vec![Instance {
                     position: noobwerkz::glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-                    rotation: noobwerkz::glam::Quat::IDENTITY,
+                    orientation: noobwerkz::glam::Quat::IDENTITY,
                     scale: noobwerkz::glam::Vec3A::splat(10.0),
                 }],
             ));

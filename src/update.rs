@@ -1,11 +1,11 @@
-use noobwerkz::asset_manager;
 use noobwerkz::camera::CameraContext;
 use noobwerkz::graphics::*;
 use noobwerkz::light::*;
-use noobwerkz::skinned_model;
 use noobwerkz::user_context::UserContext;
 use noobwerkz::web_time::Duration;
 use std::f32::consts::PI;
+
+use crate::user_data::*;
 
 pub fn user_update(
     gfx_ctx: &mut GraphicsContext,
@@ -18,7 +18,7 @@ pub fn user_update(
     let scene_idx = u.active_scene;
     let s = &mut u.scenes[scene_idx];
     let cam_idx = s.active_camera;
-    s.cameras[s.active_camera].update();
+    s.cameras[cam_idx].update();
     cam_ctx
         .uniform
         .update_view_proj(&s.cameras[cam_idx], &s.cameras[cam_idx].projection);
@@ -40,10 +40,14 @@ pub fn user_update(
         noobwerkz::bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
     );
 
-    let fps30 = Duration::from_micros((1_000_000.0 / 30.0) as u64);
+    let fps = Duration::from_micros((1_000_000.0 / 30.0) as u64);
     u.time_elapsed += dt.as_micros();
-    if u.time_elapsed > fps30.as_micros() {
+    if u.time_elapsed > fps.as_micros() {
        s.update_characters(dt, &u.asset_mgr.skinned_models, &gfx_ctx.queue);
-        u.time_elapsed -= fps30.as_micros();
+        u.time_elapsed -= fps.as_micros();
     }
+
+    let _user_data = USER_DATA.lock().expect("UserData poisoned during user_update()");
+    // user_data.
+
 }

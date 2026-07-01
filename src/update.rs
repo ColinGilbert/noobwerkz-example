@@ -40,7 +40,7 @@ pub fn user_update(
         noobwerkz::bytemuck::cast_slice(&[light_ctx.light_uniforms[0]]),
     );
 
-    let fps = Duration::from_micros((1_000_000.0 / 30.0) as u64);
+    let fps = Duration::from_micros((1_000_000.0 / 60.0) as u64);
     u.time_elapsed += dt.as_micros();
     if u.time_elapsed > fps.as_micros() {
        s.update_characters(dt, &u.asset_mgr.skinned_models, &gfx_ctx.queue);
@@ -48,6 +48,6 @@ pub fn user_update(
     }
 
     let _user_data = USER_DATA.lock().expect("UserData poisoned during user_update()");
-    // user_data.
 
+    
 }

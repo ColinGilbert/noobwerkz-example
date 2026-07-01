@@ -6,11 +6,10 @@ use noobwerkz::model_node::*;
 use noobwerkz::scene::*;
 use noobwerkz::skeletal_context::SkeletalContext;
 use noobwerkz::user_context::UserContext;
-use anim_graph_rs::animgraph_definitions::AnimGraphDefinition;
-use anim_graph_rs::edge_definitions::AnimEdgeDefinition;
-use anim_graph_rs::node_definitions::AnimNodeDefinition;
-use anim_graph_rs::node_definitions::SamplerNodeDefinition;
-use anim_graph_rs::node_definitions::StateMachineNodeDefinition;
+use simple_animgraph::animgraph_definition::AnimGraphDefinition;
+use simple_animgraph::edge_definitions::TransitionDefinition;
+use simple_animgraph::node_definitions::GenericNodeDefinition;
+use simple_animgraph::node_definitions::SamplerNodeDefinition;
 
 pub fn user_setup(
     gfx_ctx: &mut GraphicsContext,
@@ -96,27 +95,19 @@ pub fn user_setup(
     // }
 
     let mut animgraph_definition = AnimGraphDefinition::new();
-    let mut state_machine_definition = StateMachineNodeDefinition::new("root".to_owned());
-    let node = state_machine_definition
-        .graph
-        .add_node(AnimNodeDefinition::Sampler(SamplerNodeDefinition::new(
-            "animation_0".to_owned(),
-        )));
-    let _ = state_machine_definition.graph.add_edge(
-        AnimEdgeDefinition::Simple,
-        state_machine_definition.start,
-        node,
-    );
-    let _ = state_machine_definition.graph.add_edge(
-        AnimEdgeDefinition::Simple,
-        node,
-        state_machine_definition.end,
-    );
+    let root_node_def = GenericNodeDefinition::Sampler(SamplerNodeDefinition {
+            speed: 1.0,
+            animation_name: "animation_0".to_owned(),
+            looping: true,
+            name: "walk".to_owned()
+        });
+
     let root = animgraph_definition
         .graph
-        .add_node(state_machine_definition);
+        .add_node(root_node_def);
     
-    animgraph_definition.root = Some(root);
+    animgraph_definition.root = Some(root);    
+
 
     match cesium_man {
         Ok(val) => {

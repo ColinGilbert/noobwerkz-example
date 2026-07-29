@@ -6,10 +6,11 @@ use noobwerkz::model_node::*;
 use noobwerkz::scene::*;
 use noobwerkz::skeletal_context::SkeletalContext;
 use noobwerkz::user_context::UserContext;
-use simple_animgraph::animgraph_definition::AnimGraphDefinition;
-use simple_animgraph::edge_definitions::TransitionDefinition;
-use simple_animgraph::node_definitions::GenericNodeDefinition;
-use simple_animgraph::node_definitions::SamplerNodeDefinition;
+use noobwerkz::simple_animgraph::animgraph_definition::AnimGraphDefinition;
+// use noobwerkz::simple_animgraph::edge_definitions::TransitionDefinition;
+use noobwerkz::simple_animgraph::node_definitions::GenericNodeDefinition;
+use noobwerkz::simple_animgraph::node_definitions::SamplerNodeDefinition;
+use crate::user_data::*;
 
 pub fn user_setup(
     gfx_ctx: &mut GraphicsContext,
@@ -17,6 +18,7 @@ pub fn user_setup(
     lights: &mut Vec<LightUniform>,
 ) {
     let u = user_ctx;
+    let _user_data = USER_DATA.lock().expect("UserData poisoned during user_update()");
 
     let projection = Projection::new(
         gfx_ctx.config.height,

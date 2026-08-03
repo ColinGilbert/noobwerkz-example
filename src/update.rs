@@ -7,6 +7,7 @@ use std::f32::consts::PI;
 
 use crate::user_data::*;
 
+// MODIFY ME!
 pub fn user_update(
     gfx_ctx: &mut GraphicsContext,
     cam_ctx: &mut CameraContext,
@@ -48,6 +49,4 @@ pub fn user_update(
     }
 
     let _user_data = USER_DATA.lock().expect("UserData poisoned during user_update()");
-
-    
 }

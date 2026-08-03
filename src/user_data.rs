@@ -18,6 +18,5 @@ impl UserData {
         true
     }
 }
-// STOP MODIFYING HERE
 
 pub static USER_DATA: LazyLock<Mutex<UserData>> = LazyLock::new(|| { Mutex::new(UserData::new()) } );

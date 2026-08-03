@@ -12,6 +12,7 @@ use noobwerkz::simple_animgraph::node_definitions::GenericNodeDefinition;
 use noobwerkz::simple_animgraph::node_definitions::SamplerNodeDefinition;
 use crate::user_data::*;
 
+// MODIFY ME!
 pub fn user_setup(
     gfx_ctx: &mut GraphicsContext,
     user_ctx: &mut UserContext,

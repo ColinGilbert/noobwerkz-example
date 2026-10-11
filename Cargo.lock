@@ -3170,7 +3170,7 @@ dependencies = [
 [[package]]
 name = "noobwerkz"
 version = "0.0.1"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#6dbe593def09b439d473885026283c10631a3c5d"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#c291208eb31bc24a1f6ebebe74971c2b2e533c4c"
 dependencies = [
  "anyhow",
  "bevy_ballistic_stripped",

@@ -1,16 +1,17 @@
 use noobwerkz::camera::*;
 use noobwerkz::graphics::*;
+use noobwerkz::index_types::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
 use noobwerkz::model3d_node::*;
 use noobwerkz::scene3d::*;
+use noobwerkz::simple_animgraph::animgraph_definition::AnimGraphDefinition;
 use noobwerkz::skeletal_context::SkeletalContext;
 use noobwerkz::user_context::UserContext;
-use noobwerkz::simple_animgraph::animgraph_definition::AnimGraphDefinition;
 // use noobwerkz::simple_animgraph::edge_definitions::TransitionDefinition;
+use crate::user_data::*;
 use noobwerkz::simple_animgraph::node_definitions::GenericNodeDefinition;
 use noobwerkz::simple_animgraph::node_definitions::SamplerNodeDefinition;
-use crate::user_data::*;
 
 // MODIFY ME!
 pub fn user_setup(
@@ -19,7 +20,9 @@ pub fn user_setup(
     lights: &mut Vec<LightUniform>,
 ) {
     let u = user_ctx;
-    let _user_data = USER_DATA.lock().expect("UserData poisoned during user_update()");
+    let _user_data = USER_DATA
+        .lock()
+        .expect("UserData poisoned during user_update()");
 
     let projection = Projection::new(
         gfx_ctx.config.height,
@@ -62,6 +65,7 @@ pub fn user_setup(
         &anims,
     ));
 
+    let skeletal_ctx_idx = SkeletalContextIndex::new(u.skeletals.len() - 1);
     let mut path = std::path::PathBuf::new();
     path.push("res");
     let mut cesium_man_path = path.clone();
@@ -74,7 +78,7 @@ pub fn user_setup(
         &mut gfx_ctx.queue,
         &gfx_ctx.debug_material,
         &gfx_ctx.texture_bind_group_layout_3d,
-        &u.skeletals[0],
+        &u.skeletals[skeletal_ctx_idx],
     );
 
     //const SPACE_BETWEEN: f32 = 1.6;
@@ -86,8 +90,7 @@ pub fn user_setup(
     skeletal_anim_instances.push(Instance {
         position: noobwerkz::glam::Vec3A::from_array([
             0.0, //SPACE_BETWEEN * outer as f32,
-            0.0,
-            0.0,//SPACE_BETWEEN * inner as f32,
+            0.0, 0.0, //SPACE_BETWEEN * inner as f32,
         ]),
         orientation: noobwerkz::glam::Quat::IDENTITY,
         scale: noobwerkz::glam::Vec3A::splat(1.0),
@@ -99,18 +102,15 @@ pub fn user_setup(
 
     let mut animgraph_definition = AnimGraphDefinition::new();
     let root_node_def = GenericNodeDefinition::Sampler(SamplerNodeDefinition {
-            speed: 1.0,
-            animation_name: "animation_0".to_owned(),
-            looping: true,
-            name: "walk".to_owned()
-        });
+        speed: 1.0,
+        animation_name: "animation_0".to_owned(),
+        looping: true,
+        name: "walk".to_owned(),
+    });
 
-    let root = animgraph_definition
-        .graph
-        .add_node(root_node_def);
-    
-    animgraph_definition.root = Some(root);    
+    let root = animgraph_definition.graph.add_node(root_node_def);
 
+    animgraph_definition.root = Some(root);
 
     match cesium_man {
         Ok(val) => {
@@ -120,8 +120,8 @@ pub fn user_setup(
                 val,
                 &skeletal_anim_instances,
                 &animgraph_definition,
-                u.skeletals[0].skeleton.clone(),
-                &u.skeletals[0].get_anim_name_map(),
+                u.skeletals[skeletal_ctx_idx].skeleton.clone(),
+                &u.skeletals[skeletal_ctx_idx].get_anim_name_map(),
                 "cesium-man".to_owned(),
             );
         }
@@ -144,14 +144,13 @@ pub fn user_setup(
 
     match avocado {
         Ok(val) => {
-            s.model_nodes.push(Model3DNode::new(
-                val,
-                vec![Instance {
-                    position: noobwerkz::glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-                    orientation: noobwerkz::glam::Quat::IDENTITY,
-                    scale: noobwerkz::glam::Vec3A::splat(10.0),
-                }],
-            ));
+            let mut instances = Instances::<Instance>::new();
+            instances.push(Instance {
+                position: noobwerkz::glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+                orientation: noobwerkz::glam::Quat::IDENTITY,
+                scale: noobwerkz::glam::Vec3A::splat(10.0),
+            });
+            s.model_nodes.push(Model3DNode::new(val, instances));
         }
         Err(err) => {
             println!("Could not load model from file. Error {}", err)

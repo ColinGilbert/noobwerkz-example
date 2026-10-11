@@ -1,4 +1,4 @@
-use noobwerkz::camera::*;
+use noobwerkz::camera3d::*;
 use noobwerkz::graphics::*;
 use noobwerkz::index_types::*;
 use noobwerkz::instance::*;
@@ -6,7 +6,7 @@ use noobwerkz::light::LightUniform;
 use noobwerkz::model3d_node::*;
 use noobwerkz::scene3d::*;
 use noobwerkz::simple_animgraph::animgraph_definition::AnimGraphDefinition;
-use noobwerkz::skeletal_context::SkeletalContext;
+use noobwerkz::skeletal_context3d::SkeletalContext3D;
 use noobwerkz::user_context::UserContext;
 // use noobwerkz::simple_animgraph::edge_definitions::TransitionDefinition;
 use crate::user_data::*;
@@ -24,7 +24,7 @@ pub fn user_setup(
         .lock()
         .expect("UserData poisoned during user_update()");
 
-    let projection = Projection::new(
+    let projection = Projection3D::new(
         gfx_ctx.config.height,
         gfx_ctx.config.width,
         degrees_to_radians(45.0),
@@ -38,7 +38,7 @@ pub fn user_setup(
         z: 0.0,
     });
 
-    let c = Camera::new(
+    let c = Camera3D::new(
         &noobwerkz::glam::Vec3 {
             x: 0.0,
             y: 1.0,
@@ -59,7 +59,7 @@ pub fn user_setup(
 
     anims.push("animation_0.ozz");
 
-    u.skeletals.push(SkeletalContext::new(
+    u.skeletals.push(SkeletalContext3D::new(
         &vec!["res"],
         "cesium-man-skeleton.ozz",
         &anims,
@@ -71,7 +71,7 @@ pub fn user_setup(
     let mut cesium_man_path = path.clone();
     cesium_man_path.push("cesium-man-model.bin");
 
-    let cesium_man = u.asset_mgr.load_skinned_model_from_file(
+    let cesium_man = u.asset_mgr.load_skinned_3d_model_from_file(
         &cesium_man_path,
         "Cesium Man",
         &mut gfx_ctx.device,
@@ -133,7 +133,7 @@ pub fn user_setup(
     let mut avocado_path = path.clone();
     avocado_path.push("avocado-model.bin");
 
-    let avocado = u.asset_mgr.load_model_from_file(
+    let avocado = u.asset_mgr.load_3d_model_from_file(
         &avocado_path,
         "Avocado",
         &mut gfx_ctx.device,

@@ -1,4 +1,4 @@
-use noobwerkz::camera::CameraContext;
+use noobwerkz::camera3d::CameraContext;
 use noobwerkz::graphics::*;
 use noobwerkz::light::*;
 use noobwerkz::user_context::UserContext;

@@ -2,7 +2,7 @@ use noobwerkz::camera::*;
 use noobwerkz::graphics::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
-use noobwerkz::model_node::*;
+use noobwerkz::model3d_node::*;
 use noobwerkz::scene3d::*;
 use noobwerkz::skeletal_context::SkeletalContext;
 use noobwerkz::user_context::UserContext;
@@ -144,7 +144,7 @@ pub fn user_setup(
 
     match avocado {
         Ok(val) => {
-            s.model_nodes.push(ModelNode::new(
+            s.model_nodes.push(Model3DNode::new(
                 val,
                 vec![Instance {
                     position: noobwerkz::glam::Vec3A::from_array([0.0, 0.0, 0.0]),

@@ -3,7 +3,7 @@ use noobwerkz::graphics::*;
 use noobwerkz::instance::*;
 use noobwerkz::light::LightUniform;
 use noobwerkz::model_node::*;
-use noobwerkz::scene::*;
+use noobwerkz::scene3d::*;
 use noobwerkz::skeletal_context::SkeletalContext;
 use noobwerkz::user_context::UserContext;
 use noobwerkz::simple_animgraph::animgraph_definition::AnimGraphDefinition;
@@ -29,7 +29,7 @@ pub fn user_setup(
         1000.0,
     );
 
-    let mut s = Scene::new(&noobwerkz::glam::Vec3 {
+    let mut s = Scene3D::new(&noobwerkz::glam::Vec3 {
         x: 0.0,
         y: -9.81,
         z: 0.0,

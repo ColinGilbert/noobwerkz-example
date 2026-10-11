@@ -1,12 +1,12 @@
 use noobwerkz::camera3d::*;
 use noobwerkz::graphics::*;
 use noobwerkz::index_types::*;
-use noobwerkz::instance::*;
-use noobwerkz::light::LightUniform;
+use noobwerkz::instance3d::*;
+use noobwerkz::light3d::Light3DUniform;
 use noobwerkz::model3d_node::*;
 use noobwerkz::scene3d::*;
 use noobwerkz::simple_animgraph::animgraph_definition::AnimGraphDefinition;
-use noobwerkz::skeletal_context3d::SkeletalContext3D;
+use noobwerkz::skeletal3d_context::Skeletal3DContext;
 use noobwerkz::user_context::UserContext;
 // use noobwerkz::simple_animgraph::edge_definitions::TransitionDefinition;
 use crate::user_data::*;
@@ -17,7 +17,7 @@ use noobwerkz::simple_animgraph::node_definitions::SamplerNodeDefinition;
 pub fn user_setup(
     gfx_ctx: &mut GraphicsContext,
     user_ctx: &mut UserContext,
-    lights: &mut Vec<LightUniform>,
+    lights: &mut Vec<Light3DUniform>,
 ) {
     let u = user_ctx;
     let _user_data = USER_DATA
@@ -59,13 +59,13 @@ pub fn user_setup(
 
     anims.push("animation_0.ozz");
 
-    u.skeletals.push(SkeletalContext3D::new(
+    u.skeletals.push(Skeletal3DContext::new(
         &vec!["res"],
         "cesium-man-skeleton.ozz",
         &anims,
     ));
 
-    let skeletal_ctx_idx = SkeletalContextIndex::new(u.skeletals.len() - 1);
+    let skeletal_ctx_idx = Skeletal3DContextIndex::new(u.skeletals.len() - 1);
     let mut path = std::path::PathBuf::new();
     path.push("res");
     let mut cesium_man_path = path.clone();
@@ -82,12 +82,12 @@ pub fn user_setup(
     );
 
     //const SPACE_BETWEEN: f32 = 1.6;
-    let mut skeletal_anim_instances = Vec::<Instance>::new();
+    let mut skeletal_anim_instances = Vec::<Instance3D>::new();
     //let mut outer = 0;
     // while outer < 2 {
     //     let mut inner = 0;
     //     while inner < 2 {
-    skeletal_anim_instances.push(Instance {
+    skeletal_anim_instances.push(Instance3D {
         position: noobwerkz::glam::Vec3A::from_array([
             0.0, //SPACE_BETWEEN * outer as f32,
             0.0, 0.0, //SPACE_BETWEEN * inner as f32,
@@ -144,8 +144,8 @@ pub fn user_setup(
 
     match avocado {
         Ok(val) => {
-            let mut instances = Instances::<Instance>::new();
-            instances.push(Instance {
+            let mut instances = Instances::<Instance3D>::new();
+            instances.push(Instance3D {
                 position: noobwerkz::glam::Vec3A::from_array([0.0, 0.0, 0.0]),
                 orientation: noobwerkz::glam::Quat::IDENTITY,
                 scale: noobwerkz::glam::Vec3A::splat(10.0),
@@ -157,7 +157,7 @@ pub fn user_setup(
         }
     }
 
-    lights.push(LightUniform::new(
+    lights.push(Light3DUniform::new(
         noobwerkz::glam::Vec3 {
             x: 3.0,
             y: 2.0,

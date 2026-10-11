@@ -1,6 +1,6 @@
 use noobwerkz::camera3d::CameraContext;
 use noobwerkz::graphics::*;
-use noobwerkz::light::*;
+use noobwerkz::light3d::*;
 use noobwerkz::user_context::UserContext;
 use noobwerkz::web_time::Duration;
 use std::f32::consts::PI;
@@ -11,7 +11,7 @@ use crate::user_data::*;
 pub fn user_update(
     gfx_ctx: &mut GraphicsContext,
     cam_ctx: &mut CameraContext,
-    light_ctx: &mut LightContext,
+    light_ctx: &mut Light3DContext,
     user_ctx: &mut UserContext,
     dt: Duration,
 ) {

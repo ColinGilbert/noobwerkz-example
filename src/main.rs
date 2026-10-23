@@ -1,5 +1,6 @@
-use noobwerkz::app::run;
-use noobwerkz::callbacks::*;
+use noobwerkz_client::app::run;
+use noobwerkz_client::callbacks::*;
+
 use noobwerkz_example::gui::*;
 use noobwerkz_example::setup::*;
 use noobwerkz_example::update::*;

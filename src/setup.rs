@@ -1,22 +1,19 @@
-use noobwerkz::camera3d::*;
-use noobwerkz::graphics::*;
-use noobwerkz::index_types::*;
-use noobwerkz::instance3d::*;
-use noobwerkz::light3d::Light3DUniform;
-use noobwerkz::model3d_node::*;
-use noobwerkz::scene3d::*;
-use noobwerkz::simple_animgraph::animgraph_definition::AnimGraphDefinition;
-use noobwerkz::skeletal3d_context::Skeletal3DContext;
-use noobwerkz::user_context::UserContext;
+use noobwerkz_client::camera3d::*;
+use noobwerkz_client::graphics::*;
+use noobwerkz_client::index_types::*;
+use noobwerkz_client::instance3d::*;
+use noobwerkz_client::light3d::Light3DUniform;
+use noobwerkz_client::model3d_node::*;
+use noobwerkz_client::scene3d::*;
+use noobwerkz_client::client_user_context::ClientUserContext;
+use noobwerkz_skeletal_animation::{animation_graph_definition::*};
 // use noobwerkz::simple_animgraph::edge_definitions::TransitionDefinition;
 use crate::user_data::*;
-use noobwerkz::simple_animgraph::node_definitions::GenericNodeDefinition;
-use noobwerkz::simple_animgraph::node_definitions::SamplerNodeDefinition;
 
 // MODIFY ME!
 pub fn user_setup(
     gfx_ctx: &mut GraphicsContext,
-    user_ctx: &mut UserContext,
+    user_ctx: &mut ClientUserContext,
     lights: &mut Vec<Light3DUniform>,
 ) {
     let u = user_ctx;
@@ -32,40 +29,29 @@ pub fn user_setup(
         1000.0,
     );
 
-    let mut s = Scene3D::new(&noobwerkz::glam::Vec3 {
+    let mut s = Scene3D::new(&noobwerkz_client::glam::Vec3 {
         x: 0.0,
         y: -9.81,
         z: 0.0,
     });
 
     let c = Camera3D::new(
-        &noobwerkz::glam::Vec3 {
+        &noobwerkz_client::glam::Vec3 {
             x: 0.0,
             y: 1.0,
             z: 3.0,
         },
-        &noobwerkz::glam::Vec3 {
+        &noobwerkz_client::glam::Vec3 {
             x: 0.0,
             y: 1.0,
             z: 0.0,
         },
-        &noobwerkz::glam::Vec3::Y,
+        &noobwerkz_client::glam::Vec3::Y,
         0.1,
         0.1,
         projection,
     );
 
-    let mut anims = Vec::new();
-
-    anims.push("animation_0.ozz");
-
-    u.skeletals.push(Skeletal3DContext::new(
-        &vec!["res"],
-        "cesium-man-skeleton.ozz",
-        &anims,
-    ));
-
-    let skeletal_ctx_idx = Skeletal3DContextIndex::new(u.skeletals.len() - 1);
     let mut path = std::path::PathBuf::new();
     path.push("res");
     let mut cesium_man_path = path.clone();
@@ -78,7 +64,6 @@ pub fn user_setup(
         &mut gfx_ctx.queue,
         &gfx_ctx.debug_material,
         &gfx_ctx.texture_bind_group_layout_3d,
-        &u.skeletals[skeletal_ctx_idx],
     );
 
     //const SPACE_BETWEEN: f32 = 1.6;
@@ -88,22 +73,22 @@ pub fn user_setup(
     //     let mut inner = 0;
     //     while inner < 2 {
     skeletal_anim_instances.push(Instance3D {
-        position: noobwerkz::glam::Vec3A::from_array([
+        position: noobwerkz_client::glam::Vec3A::from_array([
             0.0, //SPACE_BETWEEN * outer as f32,
             0.0, 0.0, //SPACE_BETWEEN * inner as f32,
         ]),
-        orientation: noobwerkz::glam::Quat::IDENTITY,
-        scale: noobwerkz::glam::Vec3A::splat(1.0),
+        orientation: noobwerkz_client::glam::Quat::IDENTITY,
+        scale: noobwerkz_client::glam::Vec3A::splat(1.0),
     });
     //     inner += 1;
     // }
     // outer += 1;
     // }
 
-    let mut animgraph_definition = AnimGraphDefinition::new();
+    let mut animgraph_definition = AnimationGraphDefinition::new();
     let root_node_def = GenericNodeDefinition::Sampler(SamplerNodeDefinition {
         speed: 1.0,
-        animation_name: "animation_0".to_owned(),
+        animation_name: "0".to_owned(),
         looping: true,
         name: "walk".to_owned(),
     });
@@ -120,8 +105,9 @@ pub fn user_setup(
                 val,
                 &skeletal_anim_instances,
                 &animgraph_definition,
-                u.skeletals[skeletal_ctx_idx].skeleton.clone(),
-                &u.skeletals[skeletal_ctx_idx].get_anim_name_map(),
+                u.asset_mgr.skinned_models[val].animations.clone(),
+                u.asset_mgr.skinned_models[val].skeleton.clone(),
+                &u.asset_mgr.skinned_models[val].animations_idx_by_name,
                 "cesium-man".to_owned(),
             );
         }
@@ -131,7 +117,7 @@ pub fn user_setup(
     }
 
     let mut avocado_path = path.clone();
-    avocado_path.push("avocado-model.bin");
+    avocado_path.push("Avocado.bin");
 
     let avocado = u.asset_mgr.load_3d_model_from_file(
         &avocado_path,
@@ -146,9 +132,9 @@ pub fn user_setup(
         Ok(val) => {
             let mut instances = Instances::<Instance3D>::new();
             instances.push(Instance3D {
-                position: noobwerkz::glam::Vec3A::from_array([0.0, 0.0, 0.0]),
-                orientation: noobwerkz::glam::Quat::IDENTITY,
-                scale: noobwerkz::glam::Vec3A::splat(10.0),
+                position: noobwerkz_client::glam::Vec3A::from_array([0.0, 0.0, 0.0]),
+                orientation: noobwerkz_client::glam::Quat::IDENTITY,
+                scale: noobwerkz_client::glam::Vec3A::splat(10.0),
             });
             s.model_nodes.push(Model3DNode::new(val, instances));
         }
@@ -158,12 +144,12 @@ pub fn user_setup(
     }
 
     lights.push(Light3DUniform::new(
-        noobwerkz::glam::Vec3 {
+        noobwerkz_client::glam::Vec3 {
             x: 3.0,
             y: 2.0,
             z: 3.0,
         },
-        noobwerkz::glam::Vec3 {
+        noobwerkz_client::glam::Vec3 {
             x: 1.0,
             y: 1.0,
             z: 1.0,

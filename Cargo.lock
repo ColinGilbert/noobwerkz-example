@@ -2641,7 +2641,7 @@ dependencies = [
 [[package]]
 name = "noobwerkz-client"
 version = "0.1.0"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#932c439893409f510874e005c9c38091542bfe74"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#06090fd178ace5db7996b4810e7939da89a1130b"
 dependencies = [
  "anyhow",
  "bitmask-enum",
@@ -2676,7 +2676,7 @@ dependencies = [
 [[package]]
 name = "noobwerkz-shared"
 version = "0.1.0"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#932c439893409f510874e005c9c38091542bfe74"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#06090fd178ace5db7996b4810e7939da89a1130b"
 dependencies = [
  "env_logger",
  "glam 0.33.12",
@@ -2690,7 +2690,7 @@ dependencies = [
 [[package]]
 name = "noobwerkz-skeletal-animation"
 version = "0.1.0"
-source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#932c439893409f510874e005c9c38091542bfe74"
+source = "git+https://github.com/colingilbert/noobwerkz-ng.git?branch=master#06090fd178ace5db7996b4810e7939da89a1130b"
 dependencies = [
  "anyhow",
  "glam 0.33.12",

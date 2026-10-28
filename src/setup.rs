@@ -1,14 +1,17 @@
 use noobwerkz_client::camera3d::*;
+use noobwerkz_client::client_user_context::ClientUserContext;
 use noobwerkz_client::graphics::*;
 use noobwerkz_client::index_types::*;
 use noobwerkz_client::instance3d::*;
 use noobwerkz_client::light3d::Light3DUniform;
 use noobwerkz_client::model3d_node::*;
 use noobwerkz_client::scene3d::*;
-use noobwerkz_client::client_user_context::ClientUserContext;
-use noobwerkz_skeletal_animation::{animation_graph_definition::*};
+use noobwerkz_client::simple_particles::ParticleEffect;
+use noobwerkz_skeletal_animation::animation_graph_definition::*;
 // use noobwerkz::simple_animgraph::edge_definitions::TransitionDefinition;
 use crate::user_data::*;
+
+use image::*;
 
 // MODIFY ME!
 pub fn user_setup(
@@ -17,9 +20,13 @@ pub fn user_setup(
     lights: &mut Vec<Light3DUniform>,
 ) {
     let u = user_ctx;
-    let _user_data = USER_DATA
+    let user_data = USER_DATA
         .lock()
         .expect("UserData poisoned during user_update()");
+
+    if user_data.works {
+        println!("User data initialized");
+    }
 
     let projection = Projection3D::new(
         gfx_ctx.config.height,
@@ -63,26 +70,46 @@ pub fn user_setup(
         &mut gfx_ctx.device,
         &mut gfx_ctx.queue,
         &gfx_ctx.debug_material,
-        &gfx_ctx.texture_bind_group_layout_3d,
+        &gfx_ctx.texture_bind_group_layout,
     );
 
-    //const SPACE_BETWEEN: f32 = 1.6;
+    const SPACE_BETWEEN: f32 = 1.6;
     let mut skeletal_anim_instances = Vec::<Instance3D>::new();
-    //let mut outer = 0;
+    let mut outer = 0;
+    while outer < 10 {
+        let mut inner = 0;
+        while inner < 10 {
+            skeletal_anim_instances.push(Instance3D {
+                position: noobwerkz_client::glam::Vec3A::from_array([
+                    SPACE_BETWEEN * outer as f32,
+                    3.0,
+                    SPACE_BETWEEN * inner as f32,
+                ]),
+                orientation: noobwerkz_client::glam::Quat::IDENTITY,
+                scale: noobwerkz_client::glam::Vec3A::splat(1.0),
+            });
+            inner += 1;
+        }
+        outer += 1;
+    }
+
+    // let mut skeletal_anim_instances_two = Vec::<Instance3D>::new();
+    // let mut outer = 0;
     // while outer < 2 {
     //     let mut inner = 0;
     //     while inner < 2 {
-    skeletal_anim_instances.push(Instance3D {
-        position: noobwerkz_client::glam::Vec3A::from_array([
-            0.0, //SPACE_BETWEEN * outer as f32,
-            0.0, 0.0, //SPACE_BETWEEN * inner as f32,
-        ]),
-        orientation: noobwerkz_client::glam::Quat::IDENTITY,
-        scale: noobwerkz_client::glam::Vec3A::splat(1.0),
-    });
-    //     inner += 1;
-    // }
-    // outer += 1;
+    //         skeletal_anim_instances_two.push(Instance3D {
+    //             position: noobwerkz_client::glam::Vec3A::from_array([
+    //                 SPACE_BETWEEN * outer as f32,
+    //                 0.0,
+    //                 SPACE_BETWEEN * inner as f32,
+    //             ]),
+    //             orientation: noobwerkz_client::glam::Quat::IDENTITY,
+    //             scale: noobwerkz_client::glam::Vec3A::splat(1.0),
+    //         });
+    //         inner += 1;
+    //     }
+    //     outer += 1;
     // }
 
     let mut animgraph_definition = AnimationGraphDefinition::new();
@@ -110,6 +137,17 @@ pub fn user_setup(
                 &u.asset_mgr.skinned_models[val].animations_idx_by_name,
                 "cesium-man".to_owned(),
             );
+            // s.add_characters(
+            //     &mut gfx_ctx.device,
+            //     &gfx_ctx.bone_matrices_bind_group_layout,
+            //     val,
+            //     &skeletal_anim_instances_two,
+            //     &animgraph_definition,
+            //     u.asset_mgr.skinned_models[val].animations.clone(),
+            //     u.asset_mgr.skinned_models[val].skeleton.clone(),
+            //     &u.asset_mgr.skinned_models[val].animations_idx_by_name,
+            //     "cesium-man-two".to_owned(),
+            // );
         }
         Err(err) => {
             println!("Could not load skinned model. Error: {}", err);
@@ -125,7 +163,7 @@ pub fn user_setup(
         &mut gfx_ctx.device,
         &mut gfx_ctx.queue,
         &gfx_ctx.debug_material,
-        &gfx_ctx.texture_bind_group_layout_3d,
+        &gfx_ctx.texture_bind_group_layout,
     );
 
     match avocado {
@@ -158,5 +196,25 @@ pub fn user_setup(
 
     s.cameras.push(c);
 
+    let mut particles_definition_path = path.clone();
+    particles_definition_path.push("spark.particle");
+
+
+    let mut particles_image_path = path.clone();
+    particles_image_path.push("sparkling-fireball.png");
+
+    let image = image::ImageReader::open(particles_image_path).unwrap().decode().unwrap();
+
+
+    let rgba = image.as_bytes();
+    println!("Image width: {}, height: {}", image.width(), image.height());
+    gfx_ctx.particles_ctx.borrow_mut().register_texture(&gfx_ctx.device, &gfx_ctx.queue, "yellow-spark", rgba, image.width(), image.height(), &gfx_ctx.texture_bind_group_layout);
+
+    s.particle_system.borrow_mut().register("yellow-spark", ParticleEffect::parse(std::fs::read_to_string(particles_definition_path).unwrap().as_str()));
+    
+    let emitter = s.particle_system.borrow_mut().spawn("yellow-spark", [0.0, 1.0, 0.0]);
+
+    println!("(Scene setup): Particle system empty? {}", s.particle_system.borrow().is_empty());
+    println!("Emitter ID: {:?}", emitter);
     u.scenes.push(s);
 }

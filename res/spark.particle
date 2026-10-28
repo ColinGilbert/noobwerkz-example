@@ -1,0 +1,27 @@
+texture yellow-spark
+sheet 8 7
+blend additive
+max_particles 200
+loop true
+duration 0.5
+
+# emit
+rate 60
+rate_distance 0
+burst 0
+shape cone
+radius 0.2
+angle 25
+
+# life
+lifetime 0.4 0.8
+speed 4 6
+gravity 0 -9 0
+drag 0.1
+spin -2 2
+
+# size
+curve 0:0.1 0.3:0.5 1:0.0
+
+# color
+gradient 0:#fff8c0ff 0.5:#ff8800ff 1:#88000000

@@ -20,6 +20,7 @@ pub fn user_update(
     let s = &mut u.scenes[scene_idx];
     let cam_idx = s.active_camera;
     s.cameras[cam_idx].update();
+    s.update_particles(dt);
     cam_ctx
         .uniform
         .update_view_proj(&s.cameras[cam_idx], &s.cameras[cam_idx].projection);
@@ -47,6 +48,8 @@ pub fn user_update(
        s.update_characters(dt, &u.asset_mgr.skinned_models, &gfx_ctx.queue);
         u.time_elapsed -= fps.as_micros();
     }
+
+    // println!("Particle system empty? {}", s.particle_system.borrow().is_empty());
 
     let _user_data = USER_DATA.lock().expect("UserData poisoned during user_update()");
 }

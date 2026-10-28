@@ -6,12 +6,14 @@ use std::sync::{LazyLock, Mutex};
 
 // MODIFY ME!
 pub struct UserData {
-
+    pub works: bool,
 }
 
 impl UserData {
     pub fn new() -> Self {
-        Self {}
+        Self {
+            works: true
+        }
     }
 
     pub fn init(&mut self) -> bool {

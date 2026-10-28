@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+image = "0.25.10"
 noobwerkz-client = { git = "https://github.com/colingilbert/noobwerkz-ng.git", branch = "master" }
 noobwerkz-shared = { git = "https://github.com/colingilbert/noobwerkz-ng.git", branch = "master" }
 noobwerkz-skeletal-animation = { git = "https://github.com/colingilbert/noobwerkz-ng.git", branch = "master" }
